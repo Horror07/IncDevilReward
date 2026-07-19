@@ -3,9 +3,19 @@ require("dotenv").config();
 const TelegramBot = require("node-telegram-bot-api");
 const User = require("./models/User");
 
+// Remove old webhook if any
 const bot = new TelegramBot(process.env.BOT_TOKEN, {
   polling: true,
 });
+
+bot
+  .deleteWebHook({ drop_pending_updates: true })
+  .then(() => {
+    console.log("✅ Old Webhook Removed");
+  })
+  .catch((err) => {
+    console.log("Webhook Error:", err.message);
+  });
 
 bot.onText(/\/start/, async (msg) => {
   try {
@@ -38,22 +48,18 @@ bot.onText(/\/start/, async (msg) => {
               {
                 text: "🚀 Open Inc Devil Reward",
                 web_app: {
-                  url: "https://incdevilreward.onrender.com"
-                }
-              }
-            ]
-          ]
-        }
+                  url: "https://incdevilreward.onrender.com",
+                },
+              },
+            ],
+          ],
+        },
       }
     );
-
   } catch (err) {
     console.error("BOT ERROR:", err);
 
-    bot.sendMessage(
-      msg.chat.id,
-      "❌ कुछ गलती हो गई।"
-    );
+    await bot.sendMessage(msg.chat.id, "❌ कुछ गलती हो गई।");
   }
 });
 
