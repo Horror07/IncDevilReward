@@ -24,47 +24,29 @@ bot.onText(/\/start/, async (msg) => {
         lastName,
         referralCode: Math.random().toString(36).substring(2, 8),
       });
-
-      await bot.sendMessage(
-        msg.chat.id,
-        `🎉 Welcome ${firstName}!\n\n✅ आपका अकाउंट सफलतापूर्वक बन गया।`,
-        {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: "🚀 Open Inc Devil Reward",
-                  web_app: {
-                    url: "https://YOUR_HTTPS_URL"
-                  }
-                }
-              ]
-            ]
-          }
-        }
-      );
-    } else {
-      await bot.sendMessage(
-        msg.chat.id,
-        `👋 Welcome Back ${firstName}!`,
-        {
-          reply_markup: {
-            inline_keyboard: [
-              [
-                {
-                  text: "🚀 Open Inc Devil Reward",
-                  web_app: {
-                    url: "https://YOUR_HTTPS_URL"
-                  }
-                }
-              ]
-            ]
-          }
-        }
-      );
     }
+
+    await bot.sendMessage(
+      msg.chat.id,
+      `🎉 Welcome ${firstName}!\n\n🚀 Inc Devil Reward में आपका स्वागत है।`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              {
+                text: "🚀 Open Inc Devil Reward",
+                web_app: {
+                  url: "https://incdevilreward.onrender.com"
+                }
+              }
+            ]
+          ]
+        }
+      }
+    );
+
   } catch (err) {
-    console.log(err);
+    console.error(err);
 
     bot.sendMessage(
       msg.chat.id,
