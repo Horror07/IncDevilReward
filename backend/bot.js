@@ -24,6 +24,8 @@ bot.onText(/\/start/, async (msg) => {
         lastName,
         referralCode: Math.random().toString(36).substring(2, 8),
       });
+
+      console.log("✅ New User Created:", telegramId);
     }
 
     await bot.sendMessage(
@@ -46,7 +48,7 @@ bot.onText(/\/start/, async (msg) => {
     );
 
   } catch (err) {
-    console.error(err);
+    console.error("BOT ERROR:", err);
 
     bot.sendMessage(
       msg.chat.id,
