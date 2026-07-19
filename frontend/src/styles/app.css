@@ -1,0 +1,158 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #0f172a;
+  color: white;
+}
+
+.home {
+  max-width: 500px;
+  margin: auto;
+  padding: 15px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  color: #00e5ff;
+  font-size: 30px;
+}
+
+.balance-card {
+  background: #1e293b;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.balance-card h2 {
+  margin: 10px 0;
+  color: gold;
+}
+
+.balance-card p {
+  margin: 6px 0;
+  font-size: 18px;
+}
+
+.mining-card {
+  background: #1e293b;
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  border: 1px solid #334155;
+}
+
+.mining-card h2 {
+  margin-bottom: 10px;
+}
+
+.reward-text {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.timer-box {
+  background: #0f172a;
+  border: 2px solid #00e5ff;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.timer-box h1 {
+  font-size: 34px;
+  color: #00ff88;
+}
+
+.active-power {
+  color: #00ff66;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: bold;
+  margin-top: 10px;
+  transition: 0.3s;
+}
+
+.start-btn {
+  background: #2196f3;
+  color: white;
+}
+
+.start-btn:hover {
+  background: #1976d2;
+}
+
+.power-btn {
+  background: orange;
+  color: black;
+  margin-bottom: 12px;
+}
+
+.power-btn:hover {
+  background: #ff9800;
+}
+
+.power-btn:disabled {
+  background: #00c853;
+  color: white;
+  cursor: not-allowed;
+}
+
+.mining-btn {
+  background: gray;
+  color: white;
+}
+
+.claim-btn {
+  background: #00c853;
+  color: white;
+}
+
+.claim-btn:hover {
+  background: #00a844;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #1e293b;
+  display: flex;
+  justify-content: space-around;
+  padding: 12px 0;
+  border-top: 1px solid #334155;
+}
+
+.bottom-nav button {
+  width: auto;
+  background: transparent;
+  color: white;
+  margin: 0;
+  padding: 5px;
+}
+
+.bottom-nav button:hover {
+  color: #00e5ff;
+}
