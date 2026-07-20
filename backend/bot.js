@@ -48,7 +48,7 @@ bot.onText(/\/start/, async (msg) => {
               {
                 text: "🚀 Open Inc Devil Reward",
                 web_app: {
-                  url: "https://incdevilreward.onrender.com",
+                  url: "https://incdevilreward-1.onrender.com",
                 },
               },
             ],
