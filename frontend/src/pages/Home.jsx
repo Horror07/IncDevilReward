@@ -3,34 +3,28 @@ import BalanceCard from "../components/BalanceCard";
 import MiningCard from "../components/MiningCard";
 import BottomNav from "../components/BottomNav";
 
-function Home({
-  incBalance,
-  dvlcBalance,
-  onClaim,
-}) {
+function Home({ user, refreshUser }) {
   return (
     <div className="home">
       <Header />
 
       <BalanceCard
-        incBalance={incBalance}
-        dvlcBalance={dvlcBalance}
+        incBalance={user.incBalance}
+        dvlcBalance={user.dvlcBalance}
       />
 
       <MiningCard
+        telegramId={user.telegramId}
         coin="INC"
-        reward={30}
-        duration={10800}
-        icon="⛏️"
-        onClaim={onClaim}
+        mining={user.incMining}
+        refreshUser={refreshUser}
       />
 
       <MiningCard
+        telegramId={user.telegramId}
         coin="DVLC"
-        reward={20}
-        duration={7200}
-        icon="💎"
-        onClaim={onClaim}
+        mining={user.dvlcMining}
+        refreshUser={refreshUser}
       />
 
       <BottomNav />
