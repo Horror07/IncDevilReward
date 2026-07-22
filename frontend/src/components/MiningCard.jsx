@@ -1,118 +1,144 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
+import API from "../api";
 
 export default function MiningCard({
+  telegramId,
   coin,
-  reward,
-  duration,
-  icon,
-  onClaim,
+  mining,
+  refreshUser,
 }) {
-  const [timeLeft, setTimeLeft] = useState(duration);
-  const [mining, setMining] = useState(false);
-  const [claim, setClaim] = useState(false);
-  const [doublePower, setDoublePower] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [timeLeft, setTimeLeft] = useState(0);
+
+  const reward =
+    coin === "INC"
+      ? (mining.doublePower ? 60 : 30)
+      : (mining.doublePower ? 40 : 20);
 
   useEffect(() => {
-    if (!mining) return;
-
-    const speed = doublePower ? 2 : 1;
-
     const timer = setInterval(() => {
-      setTimeLeft((prev) => {
-        if (prev <= speed) {
-          clearInterval(timer);
-          setMining(false);
-          setClaim(true);
-          return 0;
-        }
-        return prev - speed;
-      });
+      if (!mining.active) {
+        setTimeLeft(0);
+        return;
+      }
+
+      const left = Math.max(
+        0,
+        Math.floor(
+          (new Date(mining.endTime) - new Date()) / 1000
+        )
+      );
+
+      setTimeLeft(left);
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [mining, doublePower]);
+  }, [mining]);
 
   const formatTime = (sec) => {
     const h = String(Math.floor(sec / 3600)).padStart(2, "0");
     const m = String(Math.floor((sec % 3600) / 60)).padStart(2, "0");
     const s = String(sec % 60).padStart(2, "0");
 
-    return `${h}:${m}:${s};`
+    return `${h}:${m}:${s}`;
   };
+  const startMining = async (doublePower = false) => {
+    try {
+      setLoading(true);
 
-  const startMining = () => {
-    alert("📺 Watch 1 Ad");
-    setMining(true);
-    setClaim(false);
-  };
+      const res = await API.post("/mining/start", {
+        telegramId,
+        coin,
+        doublePower,
+      });
 
-  const enable2x = () => {
-    if (doublePower) {
-      alert("✅ 2X Power Already Active");
-      return;
+      if (res.data.success) {
+  alert("🚀 Mining Started");
+  refreshUser();
+} else {
+  alert(res.data.message);
+}
+
+    } catch (err) {
+      alert("Mining Start Failed");
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
-
-    alert("📺 Watch 2 Ads");
-    setDoublePower(true);
   };
 
-  const claimReward = () => {
-    const finalReward = doublePower ? reward * 2 : reward;
+  const claimReward = async () => {
+    try {
+      setLoading(true);
 
-    alert(`🎉 ${finalReward} ${coin} Claimed Successfully`);
+      const res = await API.post("/mining/claim", {
+        telegramId,
+        coin,
+      });
 
-    if (onClaim) {
-      onClaim(coin, finalReward);
+      if (res.data.success) {
+  alert("🎉 Reward Claimed Successfully");
+  refreshUser();
+} else {
+  alert(res.data.message);
+}
+
+    } catch (err) {
+      alert("Claim Failed");
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
-
-    setTimeLeft(duration);
-    setMining(false);
-    setClaim(false);
-    setDoublePower(false);
   };
 
+  const miningFinished =
+    mining.active &&
+    timeLeft === 0;
   return (
     <div className="mining-card">
       <h2>
-        {icon} {coin} Mining
+        {coin === "INC" ? "⛏️" : "💎"} {coin} Mining
       </h2>
 
       <p className="reward-text">
-        Reward: <b>{doublePower ? reward * 2 : reward} {coin}</b>
+        Reward: <b>{reward} {coin}</b>
       </p>
 
       <div className="timer-box">
-        <h1>{formatTime(timeLeft)}</h1>
+        <h1>
+          {mining.active
+            ? formatTime(timeLeft)
+            : (coin === "INC" ? "03:00:00" : "02:00:00")}
+        </h1>
       </div>
 
-      {doublePower && (
+      {mining?.doublePower && (
         <p className="active-power">
           🚀 2X Power Active
         </p>
       )}
 
-      {!claim && (
-        <button
-          className="power-btn"
-          onClick={enable2x}
-          disabled={doublePower}
-        >
-          {doublePower
-            ? "🚀 2X Activated"
-            : "🚀 Activate 2X"}
-        </button>
+      {!mining.active && (
+        <>
+          <button
+            className="power-btn"
+            disabled={loading}
+            onClick={() => startMining(true)}
+          >
+            🚀 Activate 2X
+          </button>
+
+          <button
+            className="start-btn"
+            disabled={loading}
+            onClick={() => startMining(false)}
+          >
+            ⛏️ Start Mining
+          </button>
+        </>
       )}
 
-      {!mining && !claim && (
-        <button
-          className="start-btn"
-          onClick={startMining}
-        >
-          ⛏️ Start Mining
-        </button>
-      )}
-
-      {mining && (
+      {mining.active && !miningFinished && (
         <button
           className="mining-btn"
           disabled
@@ -121,13 +147,14 @@ export default function MiningCard({
         </button>
       )}
 
-      {claim && (
+      {miningFinished && (
         <button
           className="claim-btn"
+          disabled={loading}
           onClick={claimReward}
         >
           💰 Claim Reward
-        </button>
+          </button>
       )}
     </div>
   );
