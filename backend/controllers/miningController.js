@@ -3,7 +3,6 @@ const User = require("../models/User");
 // ==========================
 // START MINING
 // ==========================
-
 exports.startMining = async (req, res) => {
   try {
     const { telegramId, coin, doublePower } = req.body;
@@ -17,15 +16,28 @@ exports.startMining = async (req, res) => {
       });
     }
 
-    const duration =
-  coin === "INC"
-    ? 10800 // 3 घंटे
-    : 7200; // 2 घंटे
+    const mining =
+      coin === "INC"
+        ? user.incMining
+        : user.dvlcMining;
 
-const reward =
-  coin === "INC"
-    ? (doublePower ? 60 : 30)
-    : (doublePower ? 40 : 20);
+    if (mining.active && new Date() < mining.endTime) {
+      return res.json({
+        success: false,
+        message: "Mining Already Running",
+      });
+    }
+
+    const duration =
+      coin === "INC"
+        ? 10800 // 3 घंटे
+        : 7200; // 2 घंटे
+
+    const reward =
+      coin === "INC"
+        ? (doublePower ? 60 : 30)
+        : (doublePower ? 40 : 20);
+
     const startTime = new Date();
 
     const endTime = new Date(
@@ -67,7 +79,6 @@ const reward =
 // ==========================
 // GET MINING STATUS
 // ==========================
-
 exports.getMiningStatus = async (req, res) => {
 
   try {
@@ -114,7 +125,6 @@ exports.getMiningStatus = async (req, res) => {
 // ==========================
 // CLAIM REWARD
 // ==========================
-
 exports.claimReward = async (req, res) => {
 
   try {
@@ -167,13 +177,12 @@ exports.claimReward = async (req, res) => {
       user.incBalance += mining.reward;
 
       user.incMining = {
-
         active: false,
-
+        startTime: null,
+        endTime: null,
         reward: 0,
-
         claimReady: false,
-
+        doublePower: false,
       };
 
     } else {
@@ -181,13 +190,12 @@ exports.claimReward = async (req, res) => {
       user.dvlcBalance += mining.reward;
 
       user.dvlcMining = {
-
         active: false,
-
+        startTime: null,
+        endTime: null,
         reward: 0,
-
         claimReady: false,
-
+        doublePower: false,
       };
 
     }
