@@ -1,24 +1,41 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Home from "./pages/Home";
-import "./styles/app.css";
+import "./styles/App.css";
+import API from "./api";
 
 function App() {
-  const [incBalance, setIncBalance] = useState(0);
-  const [dvlcBalance, setDvlcBalance] = useState(0);
+  const [user, setUser] = useState(null);
 
-  const handleClaim = (coin, amount) => {
-    if (coin === "INC") {
-      setIncBalance((prev) => prev + amount);
-    } else if (coin === "DVLC") {
-      setDvlcBalance((prev) => prev + amount);
+  const telegramId = "123456789"; // बाद में Telegram WebApp से आएगा
+
+  const loadUser = async () => {
+    try {
+      const res = await API.get(`/mining/status/${telegramId}`);
+
+      setUser({
+        telegramId,
+        incBalance: res.data.incBalance,
+        dvlcBalance: res.data.dvlcBalance,
+        incMining: res.data.incMining,
+        dvlcMining: res.data.dvlcMining,
+      });
+    } catch (err) {
+      console.log(err);
     }
   };
 
+  useEffect(() => {
+    loadUser();
+  }, []);
+
+  if (!user) {
+    return <h2>Loading...</h2>;
+  }
+
   return (
     <Home
-      incBalance={incBalance}
-      dvlcBalance={dvlcBalance}
-      onClaim={handleClaim}
+      user={user}
+      refreshUser={loadUser}
     />
   );
 }
