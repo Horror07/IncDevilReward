@@ -18,15 +18,14 @@ exports.startMining = async (req, res) => {
     }
 
     const duration =
-      coin === "INC"
-        ? (doublePower ? 5400 : 10800)
-        : (doublePower ? 3600 : 7200);
+  coin === "INC"
+    ? 10800 // 3 घंटे
+    : 7200; // 2 घंटे
 
-    const reward =
-      coin === "INC"
-        ? (doublePower ? 60 : 30)
-        : (doublePower ? 40 : 20);
-
+const reward =
+  coin === "INC"
+    ? (doublePower ? 60 : 30)
+    : (doublePower ? 40 : 20);
     const startTime = new Date();
 
     const endTime = new Date(
