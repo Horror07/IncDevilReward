@@ -1,8 +1,9 @@
 require("dotenv").config();
 
 const express = require("express");
-const mongoose = require("mongoose");
 const cors = require("cors");
+
+const connectDB = require("./config/db");
 
 const userRoutes = require("./routes/userRoutes");
 const miningRoutes = require("./routes/miningRoutes");
@@ -22,20 +23,12 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/mining", miningRoutes);
 
-// ==================== MongoDB ====================
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB Connected");
-
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on http://localhost:${PORT}`);
-    });
-
-    // Telegram Bot
-    require("./bot");
-  })
-  .catch((err) => {
-    console.log("❌ MongoDB Connection Failed");
-    console.log(err);
+// ==================== Start Server ====================
+connectDB().then(() => {
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
   });
+
+  // Telegram Bot Start
+  require("./bot");
+});
